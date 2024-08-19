@@ -39,6 +39,10 @@ public class Livro {
         this.listaLivrosEmprestados = listaLivrosEmprestados;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public Integer getId() {
         return id;
     }
