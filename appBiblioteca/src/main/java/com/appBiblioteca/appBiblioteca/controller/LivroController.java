@@ -34,16 +34,14 @@ public class LivroController {
 
     @GetMapping("/buscar/{id}")
     public ResponseEntity<Livro> buscarLivroPorId(@PathVariable int id) {
-
         Optional<Livro> livro = livroService.buscarLivroPorId(id);
-
         return livro.map(ResponseEntity::ok).orElseThrow(() -> new LivroNotFoundException("Livro não encontrado."));
     }
 
     @PostMapping("/cadastrar")
     @ResponseStatus(HttpStatus.CREATED)
     public Livro salvarLivro(@Valid @RequestBody Livro livro) {
-        return livroService.criarLivro(livro);
+        return livroService.salvarLivro(livro);
     }
 
     @DeleteMapping("/deletar/{id}")
@@ -56,8 +54,8 @@ public class LivroController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Livro> alterarLivro(@PathVariable int id, @Valid @RequestBody Livro livroAtualizado) {
+    @PutMapping("/alterar/{id}")
+    public ResponseEntity<Livro> alterarLivro(@PathVariable Integer id, @Valid @RequestBody Livro livroAtualizado) {
         return livroService.buscarLivroPorId(id).map( livro -> {
             livro.setAutor(livroAtualizado.getAutor());
             livro.setCategoria(livroAtualizado.getCategoria());
@@ -65,7 +63,7 @@ public class LivroController {
             livro.setDataPublicacao(livroAtualizado.getDataPublicacao());
             livro.setIsbn(livroAtualizado.getIsbn());
 
-            Livro livroAlterado = livroService.criarLivro(livro);
+            Livro livroAlterado = livroService.salvarLivro(livro);
             return ResponseEntity.ok(livroAlterado);
         }).orElseThrow(() -> new LivroNotFoundException("Livro não encontrado."));
     }
@@ -77,6 +75,6 @@ public class LivroController {
             erros.put(error.getField(), error.getDefaultMessage());
         }
         return ResponseEntity.badRequest().body(erros);
-
     }
+
 }

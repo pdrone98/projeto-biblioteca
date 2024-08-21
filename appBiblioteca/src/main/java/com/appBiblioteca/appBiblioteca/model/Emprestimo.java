@@ -1,5 +1,6 @@
 package com.appBiblioteca.appBiblioteca.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,24 +16,22 @@ public class Emprestimo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idEmprestimo;
-
-    @NotNull(message = "O campo idLivro não pode ser nulo")
-    private Integer idLivro;
-    @NotNull(message = "O campo idUsuario não pode ser nulo")
-    private Integer idUsuario;
     @NotNull(message = "O campo dataEmprestimo não pode ser nulo")
     private LocalDate dataEmprestimo;
     @NotNull(message = "O campo dataDevolucao não pode ser nulo")
     private LocalDate dataDevolucao;
     @NotNull(message = "O campo status não pode ser nulo")
     private String status;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "livro_id")
+    @NotNull
+    @JsonBackReference
     private Livro livro;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")
+    @NotNull
+    @JsonBackReference
     private Usuario usuario;
-
 
 
     public Livro getLivro() {
@@ -55,25 +54,8 @@ public class Emprestimo {
         this.idEmprestimo = idEmprestimo;
     }
 
-
     public Integer getIdEmprestimo() {
         return idEmprestimo;
-    }
-
-    public Integer getIdLivro() {
-        return idLivro;
-    }
-
-    public void setIdLivro(Integer idLivro) {
-        this.idLivro = idLivro;
-    }
-
-    public Integer getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
     }
 
     public LocalDate getDataEmprestimo() {

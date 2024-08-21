@@ -1,13 +1,10 @@
 package com.appBiblioteca.appBiblioteca.service;
 
-
-import com.appBiblioteca.appBiblioteca.exceptions.UsuarioNotFoundException;
 import com.appBiblioteca.appBiblioteca.model.Usuario;
 import com.appBiblioteca.appBiblioteca.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
+
 import org.springframework.stereotype.Service;
-import org.thymeleaf.engine.IThrottledTemplateWriterControl;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,7 +20,7 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public Optional<Usuario> buscarUsuarioPorId(int id){
+    public Optional<Usuario> buscarUsuarioPorId(Integer id){
         return usuarioRepository.findById(id);
     }
 
@@ -34,7 +31,7 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    public void deletarUsuario(int id){
+    public void deletarUsuario(Integer id){
         usuarioRepository.deleteById(id);
     }
 }

@@ -30,22 +30,8 @@ public class EmprestimoService {
         return emprestimoRepository.findAll();
     }
 
-    public Optional<Emprestimo> buscarEmprestimoPorId(int id) {
+    public Optional<Emprestimo> buscarEmprestimoPorId(Integer id) {
         return emprestimoRepository.findById(id);
-    }
-
-    public Emprestimo devolverLivro(Integer idEmprestimo){
-        Emprestimo emprestimo = emprestimoRepository.findById(idEmprestimo).orElseThrow(() -> new EmprestimoNotFoundException("Emprestimo não encontrado."));
-
-        if(emprestimo.getStatus().equals("Emprestado")){
-
-            emprestimo.setStatus("Devolvido");
-            emprestimo.setDataDevolucao(LocalDate.now());
-
-            return emprestimoRepository.save(emprestimo);
-        }else {
-            throw new EmprestimoNotFoundException("O emprestimo já foi devolvido");
-        }
     }
 
     public Emprestimo criarEmprestimo(Integer idUsuario, Integer idLivro, LocalDate dataEmprestimo) {
@@ -60,25 +46,18 @@ public class EmprestimoService {
                 throw new RuntimeException("A data do empréstimo não pode ser maior que a data atual.");
             }
 
-            boolean existeEmprestimoAtivo = livroEscolhido.getListaLivrosEmprestados().stream().anyMatch(e -> e.getStatus().equals("Emprestado"));
-
+            boolean existeEmprestimoAtivo = livroEscolhido.getListaLivrosEmprestados().stream().anyMatch(e -> e.getStatus().equals("Vigente"));
             if(existeEmprestimoAtivo){
                 throw new LivroNotFoundException("O livro escolhido já está emprestado, escolha outro livro.");
             }
-
             //cria emprestimo
             Emprestimo emprestimo = new Emprestimo();
 
             emprestimo.setUsuario(usuarioEscolhido);
-            emprestimo.setIdUsuario(idUsuario);
             emprestimo.setLivro(livroEscolhido);
-            emprestimo.setIdLivro(idLivro);
             emprestimo.setDataEmprestimo(dataEmprestimo);
-            emprestimo.setStatus("Emprestado");
+            emprestimo.setStatus("Vigente");
             emprestimo.setDataDevolucao(dataEmprestimo.plusDays(30));
-
-            livroEscolhido.getListaLivrosEmprestados().add(emprestimo);
-            usuarioEscolhido.getListaEmprestimos().add(emprestimo);
 
             emprestimoRepository.save(emprestimo);
 
@@ -86,6 +65,23 @@ public class EmprestimoService {
 
         }else {
             throw new RuntimeException("Livro ou usuario não disponível");
+        }
+    }
+
+    public Emprestimo atualizarEmprestimo(Integer idEmprestimo){
+        Optional<Emprestimo> emprestimoAtualizar = emprestimoRepository.findById(idEmprestimo);
+
+        if(emprestimoAtualizar.isEmpty()){
+            throw new EmprestimoNotFoundException("Emprestimo não encontrado.");
+        }else{
+            Emprestimo emprestimoAlterado = emprestimoAtualizar.get();
+
+            emprestimoAlterado.setDataDevolucao(LocalDate.now());
+            emprestimoAlterado.setStatus("Concluído");
+
+            emprestimoRepository.save(emprestimoAlterado);
+
+            return emprestimoAlterado;
         }
     }
 }

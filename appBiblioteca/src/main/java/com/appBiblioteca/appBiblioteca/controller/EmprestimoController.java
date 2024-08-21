@@ -2,12 +2,7 @@ package com.appBiblioteca.appBiblioteca.controller;
 
 import com.appBiblioteca.appBiblioteca.exceptions.EmprestimoNotFoundException;
 import com.appBiblioteca.appBiblioteca.model.Emprestimo;
-import com.appBiblioteca.appBiblioteca.model.Livro;
-import com.appBiblioteca.appBiblioteca.model.Usuario;
 import com.appBiblioteca.appBiblioteca.service.EmprestimoService;
-import com.appBiblioteca.appBiblioteca.service.LivroService;
-import com.appBiblioteca.appBiblioteca.service.UsuarioService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -39,11 +34,9 @@ public class EmprestimoController {
     }
 
     @GetMapping("/buscar/{id}")
-    public ResponseEntity<Emprestimo> buscarEmprestimoPorId(@PathVariable int id){
-
+    public ResponseEntity<Emprestimo> buscarEmprestimoPorId(@PathVariable Integer id){
         Optional<Emprestimo> emprestimo = emprestimoService.buscarEmprestimoPorId(id);
-
-        return emprestimo.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return emprestimo.map(ResponseEntity::ok).orElseThrow(() ->  new EmprestimoNotFoundException("Emprestimo não encontrado"));
     }
 
     @PostMapping("/cadastrar")
@@ -52,25 +45,10 @@ public class EmprestimoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(emprestimo);
     }
 
-    @PostMapping("/devolver/{idEmprestimo}")
-    public Emprestimo devolverLivro(@PathVariable Integer idEmprestimo){
-        Emprestimo emprestimo = emprestimoService.devolverLivro(idEmprestimo);
-        return ResponseEntity.ok(emprestimo).getBody();
-    }
-
-    @PutMapping("/alterar/{id}")
-    public ResponseEntity<Emprestimo> atualizarEmprestimo(@PathVariable Integer id, @RequestBody Emprestimo emprestimoAtualizado){
-        return emprestimoService.buscarEmprestimoPorId(id).map( emprestimo -> {
-            emprestimo.setIdUsuario(emprestimoAtualizado.getIdUsuario());
-            emprestimo.setIdLivro(emprestimoAtualizado.getIdLivro());
-            emprestimo.setDataDevolucao(emprestimoAtualizado.getDataDevolucao());
-            emprestimo.setStatus(emprestimoAtualizado.getStatus());
-
-            Emprestimo emprestimoAlterado = emprestimoService.criarEmprestimo(emprestimo.getIdUsuario(), emprestimo.getIdLivro(), emprestimo.getDataEmprestimo());
-
-            return ResponseEntity.ok(emprestimoAlterado);
-
-        }).orElseThrow(()-> new EmprestimoNotFoundException("Emprestimo não encontrado."));
+    @PutMapping("/alterar/{idEmprestimo}")
+    public ResponseEntity<Emprestimo> atualizarEmprestimo(@PathVariable Integer idEmprestimo){
+        Emprestimo emprestimo = emprestimoService.atualizarEmprestimo(idEmprestimo);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(emprestimo);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

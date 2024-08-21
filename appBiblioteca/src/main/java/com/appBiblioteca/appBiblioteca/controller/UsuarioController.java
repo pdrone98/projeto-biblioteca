@@ -11,7 +11,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,10 +34,8 @@ public class UsuarioController {
 
     @GetMapping("/buscar/{id}")
     public ResponseEntity<Usuario> buscarUsuarioPorId (@PathVariable int id){
-
         Optional<Usuario> usuario = usuarioService.buscarUsuarioPorId(id);
-
-        return usuario.map(ResponseEntity::ok).orElseThrow(() -> new UsuarioNotFoundException("Usuario nao encontrado"));//ResponseEntity.notFound().build()); //orElseGet é chamado se não encontrar nenhum livro com o ID informado, retornando um ResponseEntity com status 404
+        return usuario.map(ResponseEntity::ok).orElseThrow(() -> new UsuarioNotFoundException("Usuario nao encontrado"));
     }
 
     @PostMapping("/cadastrar")
@@ -50,7 +47,7 @@ public class UsuarioController {
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<Void> deletarUsuario(@PathVariable int id){
         if(!usuarioService.buscarUsuarioPorId(id).isPresent()){
-            throw new UsuarioNotFoundException("Usuario nao encontrado.");// return ResponseEntity.notFound().build();
+            throw new UsuarioNotFoundException("Usuario nao encontrado.");
         }else{
             usuarioService.deletarUsuario(id);
             return ResponseEntity.ok().build();

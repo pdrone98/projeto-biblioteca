@@ -14,17 +14,19 @@ public class LivroService {
     @Autowired
     private LivroRepository livroRepository;
 
-    public List<Livro> buscarTodosLivros(){
+    public List<Livro> buscarTodosLivros() {
         return livroRepository.findAll();
     }
-    public Optional<Livro> buscarLivroPorId(int id){
+
+    public Optional<Livro> buscarLivroPorId(Integer id) {
         return livroRepository.findById(id);
     }
-    public Livro criarLivro(Livro livro){
+
+    public Livro salvarLivro(Livro livro) {
         return livroRepository.save(livro);
     }
 
-    public void deletarLivro(int id){
+    public void deletarLivro(Integer id) {
         livroRepository.deleteById(id);
     }
 }

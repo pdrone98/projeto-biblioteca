@@ -1,5 +1,6 @@
 package com.appBiblioteca.appBiblioteca.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,9 +27,9 @@ public class Livro {
     private String categoria;
     @NotNull(message = "O campo dataPublicacao não pode ser nulo.")
     private LocalDate dataPublicacao;
-
-    @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Emprestimo> listaLivrosEmprestados = new ArrayList<>();
+    @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonIgnore
+    private List<Emprestimo> listaLivrosEmprestados;
 
     public List<Emprestimo> getListaLivrosEmprestados() {
         return listaLivrosEmprestados;
