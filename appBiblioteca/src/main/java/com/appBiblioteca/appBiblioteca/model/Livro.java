@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,7 +30,7 @@ public class Livro {
     private LocalDate dataPublicacao;
     @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonIgnore
-    private List<Emprestimo> listaLivrosEmprestados;
+    private List<Emprestimo> listaLivrosEmprestados = new ArrayList<>();
 
     public List<Emprestimo> getListaLivrosEmprestados() {
         return listaLivrosEmprestados;

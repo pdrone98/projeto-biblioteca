@@ -22,6 +22,11 @@ public class LivroService {
         return livroRepository.findById(id);
     }
 
+    public List<Livro> buscarLivrosPorCategoriaNaoEmprestadosPeloUsuario(String categoria, Integer idUsuario){
+        return livroRepository.findLivrosPorCategoriaNaoEmprestadosPeloUsuario(categoria,idUsuario);
+
+    }
+
     public Livro salvarLivro(Livro livro) {
         return livroRepository.save(livro);
     }

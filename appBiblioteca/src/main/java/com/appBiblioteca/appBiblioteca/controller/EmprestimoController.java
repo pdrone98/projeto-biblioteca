@@ -39,6 +39,16 @@ public class EmprestimoController {
         return emprestimo.map(ResponseEntity::ok).orElseThrow(() ->  new EmprestimoNotFoundException("Emprestimo não encontrado"));
     }
 
+    @GetMapping("/buscar/usuario/{idUsuario}")
+    public ResponseEntity<List<Emprestimo>> getEmprestimosUsuario (@PathVariable Integer idUsuario) {
+        List<Emprestimo> emprestimo = emprestimoService.buscarEmprestimosUsuarioId(idUsuario);
+        if(emprestimo.isEmpty()){
+            throw new EmprestimoNotFoundException("Emprestimo nao encontrado");
+        }else{
+            return ResponseEntity.ok(emprestimo);
+        }
+    }
+
     @PostMapping("/cadastrar")
     public ResponseEntity<Emprestimo> criarEmprestimo(@RequestParam Integer idUsuario, @RequestParam Integer idLivro, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate dataEmprestimo){
         Emprestimo emprestimo = emprestimoService.criarEmprestimo(idUsuario,idLivro, dataEmprestimo);

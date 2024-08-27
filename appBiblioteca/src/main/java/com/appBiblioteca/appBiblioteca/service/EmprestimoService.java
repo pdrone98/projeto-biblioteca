@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class EmprestimoService {
@@ -30,8 +32,13 @@ public class EmprestimoService {
         return emprestimoRepository.findAll();
     }
 
-    public Optional<Emprestimo> buscarEmprestimoPorId(Integer id) {
-        return emprestimoRepository.findById(id);
+    public Optional<Emprestimo> buscarEmprestimoPorId(Integer idEmprestimo) {
+        return emprestimoRepository.findById(idEmprestimo);
+    }
+
+    public List<Emprestimo> buscarEmprestimosUsuarioId(Integer idUsuario){
+        return emprestimoRepository.findByUsuarioId(idUsuario);
+
     }
 
     public Emprestimo criarEmprestimo(Integer idUsuario, Integer idLivro, LocalDate dataEmprestimo) {
@@ -83,5 +90,15 @@ public class EmprestimoService {
 
             return emprestimoAlterado;
         }
+    }
+
+    public Set<String> obterCategoriasDoUsuario(Integer idUsuario){
+        List<Emprestimo> emprestimosDoUsuario = emprestimoRepository.findByUsuarioId(idUsuario);
+        Set<String> categoriasDeInteresse = new HashSet<>();
+
+        for (Emprestimo emprestimo : emprestimosDoUsuario){
+            categoriasDeInteresse.add(emprestimo.getLivro().getCategoria());
+        }
+        return categoriasDeInteresse;
     }
 }
