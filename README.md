@@ -1,5 +1,5 @@
 # projeto-biblioteca
-Projeto Biblioteca
+Projeto com operações CRUD e sistema de recomendação de livros de uma biblioteca.
 
 Instruções para executar o projeto
 
